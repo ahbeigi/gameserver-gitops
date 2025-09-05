@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: shooter-fleet
+  namespace: argocd
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchExpressions:
+        - key: env
+          operator: In
+          values: ["dev","staging","prod"]
+        - key: app
+          operator: In
+          values: ["shooter"]
+        - key: region
+          operator: In
+          values: ["us-east-1"]
+  template:
+    metadata:
+      name: shooter-{{name}}
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{metadata.labels.wave}}"
+    spec:
+      project: shooter
+      source:
+        repoURL: https://github.com/game-example/game-envs.git
+        targetRevision: main
+        path: services/shooter/overlays/{{metadata.labels.env}}/{{metadata.labels.region}}"
+      destination:
+        server: "{{server}}"
+        namespace: games
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground

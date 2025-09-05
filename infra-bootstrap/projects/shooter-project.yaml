@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: shooter
+  namespace: argocd
+spec:
+  description: Shooter game fleet
+  sourceRepos:
+    - https://github.com/game-example/game-envs.git
+    - https://github.com/game-example/gameserver-operator.git
+  destinations:
+    - namespace: "*"
+      server: "*"
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"

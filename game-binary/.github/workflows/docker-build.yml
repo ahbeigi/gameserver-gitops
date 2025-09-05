@@ -1,0 +1,37 @@
+name: build-and-push-ecr
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Derive tag
+        run: echo "TAG=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            123456789012.dkr.ecr.us-east-1.amazonaws.com/game-binary:${{ env.TAG }}
+            123456789012.dkr.ecr.us-east-1.amazonaws.com/game-binary:dev-latest
+
+      ### We could use Argo CD Image updater as an alternative. But that seems an extra moving part to maintain!
+      - name: Bump dev overlay
+        run: |
+          git clone https://github.com/game-example/game-envs.git
+          cd game-envs
+          yq -i '.spec.image = "123456789012.dkr.ecr.us-east-1.amazonaws.com/game-binary:sha-'"$SHORT_SHA dev_patch.yaml
+      # then commit & PR with peter-evans/create-pull-request

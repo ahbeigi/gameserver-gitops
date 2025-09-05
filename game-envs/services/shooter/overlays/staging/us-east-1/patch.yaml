@@ -1,0 +1,10 @@
+apiVersion: game.example.com/v1alpha1
+kind: GSDeployment
+metadata:
+  name: shooter-fleet
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/game-binary:sha-b19c0de
+  parameters:
+    maxPlayers: 32

@@ -1,0 +1,30 @@
+name: promote
+on:
+  workflow_dispatch:
+    inputs:
+      from_env: { description: "dev|staging", required: true, default: "dev" }
+      to_env:   { description: "staging|prod", required: true, default: "staging" }
+      region:   { description: "e.g. us-east-1", required: true, default: "us-east-1" }
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy image & config from source overlay
+        shell: bash
+        run: |
+          SRC="services/shooter/overlays/${{ github.event.inputs.from_env }}/${{ github.event.inputs.region }}/patch.yaml"
+          DST="services/shooter/overlays/${{ github.event.inputs.to_env }}/${{ github.event.inputs.region }}/patch.yaml"
+          img=$(yq '.spec.image' "$SRC")
+          cfg=$(yq '.spec.configRevisionRef.name' "$SRC")
+          ver=$(yq '.spec.configRevisionRef.version' "$SRC")
+          yq -i ".spec.image = \"$img\"" "$DST"
+          yq -i ".spec.configRevisionRef.name = \"$cfg\"" "$DST"
+          yq -i ".spec.configRevisionRef.version = \"$ver\"" "$DST"
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Promote shooter to ${{ github.event.inputs.to_env }} (${{ github.event.inputs.region }})"
+          title: "Promote shooter to ${{ github.event.inputs.to_env }} (${{ github.event.inputs.region }})"
+          body: "Promoting image & config from ${{ github.event.inputs.from_env }} to ${{ github.event.inputs.to_env }}."
+          branch: "promote/${{ github.event.inputs.from_env }}-to-${{ github.event.inputs.to_env }}-${{ github.event.inputs.region }}"
