@@ -25,7 +25,7 @@ spec:
     spec:
       project: shooter
       source:
-        repoURL: https://github.com/game-example/game-envs.git
+        repoURL: https://github.com/ahbeigi/game-envs.git
         targetRevision: main
         path: services/shooter/overlays/{{metadata.labels.env}}/{{metadata.labels.region}}"
       destination:

@@ -31,7 +31,7 @@ jobs:
       ### We could use Argo CD Image updater as an alternative. But that seems an extra moving part to maintain!
       - name: Bump dev overlay
         run: |
-          git clone https://github.com/game-example/game-envs.git
+          git clone https://github.com/ahbeigi/game-envs.git
           cd game-envs
           yq -i '.spec.image = "123456789012.dkr.ecr.us-east-1.amazonaws.com/game-binary:sha-'"$SHORT_SHA dev_patch.yaml
       # then commit & PR with peter-evans/create-pull-request

@@ -6,8 +6,8 @@ metadata:
 spec:
   description: Shooter game fleet
   sourceRepos:
-    - https://github.com/game-example/game-envs.git
-    - https://github.com/game-example/gameserver-operator.git
+    - https://github.com/ahbeigi/game-envs.git
+    - https://github.com/ahbeigi/gameserver-operator.git
   destinations:
     - namespace: "*"
       server: "*"

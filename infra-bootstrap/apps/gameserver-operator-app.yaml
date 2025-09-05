@@ -6,7 +6,7 @@ metadata:
 spec:
   project: shooter
   source:
-    repoURL: https://github.com/game-example/gameserver-operator.git
+    repoURL: https://github.com/ahbeigi/gameserver-operator.git
     targetRevision: main
     path: config/default
   destination:

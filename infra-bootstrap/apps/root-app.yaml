@@ -6,7 +6,7 @@ metadata:
 spec:
   project: shooter
   source:
-    repoURL: https://github.com/game-example/game-envs.git
+    repoURL: https://github.com/ahbeigi/game-envs.git
     targetRevision: main
     path: apps
   destination:

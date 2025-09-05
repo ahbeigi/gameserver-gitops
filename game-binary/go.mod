@@ -1,2 +1,2 @@
-module github.com/game-example/game-binary
+module github.com/ahbeigi/game-binary
 go 1.22
